@@ -15,7 +15,6 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 
 import br.com.caelum.eats.administrativo.TipoDeCozinha;
-import br.com.caelum.eats.seguranca.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -57,8 +56,6 @@ public class Restaurante {
 
 	@ManyToOne(optional=false)
 	private TipoDeCozinha tipoDeCozinha;
-	
-	@OneToOne
-	private User user;
+
 
 }

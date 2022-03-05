@@ -22,14 +22,16 @@ class PedidoController {
 
 	@GetMapping("/pedidos")
 	List<PedidoDto> lista() {
-		return repo.findAll().stream()
-				.map(pedido -> new PedidoDto(pedido)).collect(Collectors.toList());
+		return repo.findAll()
+				.stream()
+				.map(PedidoDto::new)
+				.collect(Collectors.toList());
 	}
 
 
 	@GetMapping("/pedidos/{id}")
 	PedidoDto porId(@PathVariable("id") Long id) {
-		Pedido pedido = repo.findById(id).orElseThrow(() -> new ResourceNotFoundException());
+		Pedido pedido = repo.findById(id).orElseThrow(ResourceNotFoundException::new);
 		return new PedidoDto(pedido);
 	}
 
@@ -43,11 +45,21 @@ class PedidoController {
 		return new PedidoDto(salvo);
 	}
 
-	@PutMapping("/pedidos/{id}/status")
-	PedidoDto atualizaStatus(@RequestBody Pedido pedido) {
+	@PutMapping("/pedidos/{pedidoId}/status")
+	PedidoDto atualizaStatus(@PathVariable Long pedidoId, @RequestBody Pedido pedidoParaAtualizar) {
+		Pedido pedido = repo.porIdComItens(pedidoId).orElseThrow(ResourceNotFoundException::new);
+		pedido.setStatus(pedidoParaAtualizar.getStatus());
 		repo.atualizaStatus(pedido.getStatus(), pedido);
 		return new PedidoDto(pedido);
 	}
+
+	@PutMapping("/pedidos/{id}/pago")
+	void pago(@PathVariable("id") Long id) {
+		Pedido pedido = repo.porIdComItens(id).orElseThrow(ResourceNotFoundException::new);
+		pedido.setStatus(Pedido.Status.PAGO);
+		repo.atualizaStatus(Pedido.Status.PAGO, pedido);
+	}
+
 
 	@GetMapping("/parceiros/restaurantes/{restauranteId}/pedidos/pendentes")
 	List<PedidoDto> pendentes(@PathVariable("restauranteId") Long restauranteId) {

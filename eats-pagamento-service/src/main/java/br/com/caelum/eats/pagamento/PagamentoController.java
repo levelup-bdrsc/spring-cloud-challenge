@@ -1,6 +1,8 @@
 package br.com.caelum.eats.pagamento;
 
 import java.net.URI;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,11 +23,21 @@ import lombok.AllArgsConstructor;
 class PagamentoController {
 
 	private PagamentoRepository pagamentoRepo;
+	private ClienteRestDoPedido pedidoCliente;
+
+	@GetMapping
+	ResponseEntity<List<PagamentoDto>> lista() {
+		return ResponseEntity.ok(pagamentoRepo.findAll()
+				.stream()
+				.map(PagamentoDto::new)
+				.collect(Collectors.toList()));
+	}
 
 	@GetMapping("/{id}")
 	PagamentoDto detalha(@PathVariable("id") Long id) {
-		Pagamento pagamento = pagamentoRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException());
-		return new PagamentoDto(pagamento);
+		return pagamentoRepo.findById(id)
+				.map(PagamentoDto::new)
+				.orElseThrow(ResourceNotFoundException::new);
 	}
 
 	@PostMapping
@@ -38,15 +50,16 @@ class PagamentoController {
 
 	@PutMapping("/{id}")
 	PagamentoDto confirma(@PathVariable("id") Long id) {
-		Pagamento pagamento = pagamentoRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException());
+		Pagamento pagamento = pagamentoRepo.findById(id).orElseThrow(ResourceNotFoundException::new);
 		pagamento.setStatus(Pagamento.Status.CONFIRMADO);
+		pedidoCliente.notificaPagamentoDoPedido(pagamento.getPedidoId());
 		pagamentoRepo.save(pagamento);
 		return new PagamentoDto(pagamento);
 	}
 
 	@DeleteMapping("/{id}")
 	PagamentoDto cancela(@PathVariable("id") Long id) {
-		Pagamento pagamento = pagamentoRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException());
+		Pagamento pagamento = pagamentoRepo.findById(id).orElseThrow(ResourceNotFoundException::new);
 		pagamento.setStatus(Pagamento.Status.CANCELADO);
 		pagamentoRepo.save(pagamento);
 		return new PagamentoDto(pagamento);

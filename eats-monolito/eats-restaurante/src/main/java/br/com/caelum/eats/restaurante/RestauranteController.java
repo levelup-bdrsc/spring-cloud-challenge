@@ -28,12 +28,6 @@ class RestauranteController {
 		return new RestauranteDto(restaurante);
 	}
 
-	@GetMapping("/parceiros/restaurantes/do-usuario/{username}")
-	public RestauranteDto detalhaParceiro(@PathVariable("username") String username) {
-		Restaurante restaurante = restauranteRepo.findByUsername(username);
-		return new RestauranteDto(restaurante);
-	}
-
 	@GetMapping("/restaurantes")
 	List<RestauranteDto> detalhePorIds(@RequestParam("ids") List<Long> ids) {
 		return restauranteRepo.findAllById(ids).stream().map(RestauranteDto::new).collect(Collectors.toList());
@@ -56,8 +50,8 @@ class RestauranteController {
 	}
 
   @PutMapping("/parceiros/restaurantes/{id}")
-  public RestauranteDto atualiza(@RequestBody RestauranteDto restaurante) {
-    Restaurante doBD = restauranteRepo.getOne(restaurante.getId());
+  public RestauranteDto atualiza(@PathVariable Long id, @RequestBody RestauranteDto restaurante) {
+    Restaurante doBD = restauranteRepo.getOne(id);
     restaurante.populaRestaurante(doBD);
     return new RestauranteDto(restauranteRepo.save(doBD));
   }

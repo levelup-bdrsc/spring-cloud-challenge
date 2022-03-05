@@ -1,6 +1,7 @@
 package br.com.caelum.eats.pedido;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 
@@ -20,6 +21,6 @@ interface PedidoRepository extends JpaRepository<Pedido, Long> {
 	List<Pedido> doRestauranteSemOsStatus(@Param("restauranteId") Long restauranteId,@Param("listaDeStatus") List<Pedido.Status> listaDeStatus);
 
 	@Query(value = "SELECT p from Pedido p LEFT JOIN FETCH p.itens where p.id = :id") 
-	Pedido porIdComItens(@Param("id") Long id);
+	Optional<Pedido> porIdComItens(@Param("id") Long id);
 
 }

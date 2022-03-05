@@ -12,7 +12,7 @@ public class PedidoService {
 	private PedidoRepository repo;
 	
 	public Pedido porIdComItens(Long pedidoId) {
-		return repo.porIdComItens(pedidoId);
+		return repo.porIdComItens(pedidoId).orElseThrow(ResourceNotFoundException::new);
 	}
 
 	public void atualizaStatus(Status status, Pedido pedido) {
