@@ -1,11 +1,11 @@
-package br.com.caelum.eats.pagamento;
+package br.com.caelum.eats.pagamento.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-class CorsConfig implements WebMvcConfigurer {
+public class CorsConfig implements WebMvcConfigurer {
 
 	@Override
 	public void addCorsMappings(CorsRegistry registry) {

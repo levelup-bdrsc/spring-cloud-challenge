@@ -1,4 +1,4 @@
-package br.com.caelum.eats.pagamento;
+package br.com.caelum.eats.pagamento.repository.entity;
 
 import java.math.BigDecimal;
 
@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-class Pagamento {
+public class Pagamento {
 
 	public static enum Status {
 		CRIADO,
