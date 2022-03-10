@@ -16,10 +16,12 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/pagamentos")
 @AllArgsConstructor
+@Slf4j
 class PagamentoController {
 
 	private PagamentoRepository pagamentoRepo;
@@ -50,6 +52,7 @@ class PagamentoController {
 
 	@PutMapping("/{id}")
 	PagamentoDto confirma(@PathVariable("id") Long id) {
+		log.info("Confirma Pagamento: " + id);
 		Pagamento pagamento = pagamentoRepo.findById(id).orElseThrow(ResourceNotFoundException::new);
 		pagamento.setStatus(Pagamento.Status.CONFIRMADO);
 		pedidoCliente.notificaPagamentoDoPedido(pagamento.getPedidoId());
