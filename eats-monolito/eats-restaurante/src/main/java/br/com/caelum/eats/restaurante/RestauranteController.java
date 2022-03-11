@@ -19,6 +19,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 class RestauranteController {
 
+	private ClienteRestDoRestaurante clienteRestDoRestaurante;
 	private RestauranteRepository restauranteRepo;
 	private CardapioRepository cardapioRepo;
 
@@ -45,22 +46,22 @@ class RestauranteController {
 		Restaurante restauranteSalvo = restauranteRepo.save(restaurante);
 		Cardapio cardapio = new Cardapio();
 		cardapio.setRestaurante(restauranteSalvo);
+		clienteRestDoRestaurante.incluirRestaurante(restauranteSalvo.getId(), restauranteSalvo.getCep(), restauranteSalvo.getTipoDeCozinha().getId());
 		cardapioRepo.save(cardapio);
 		return restauranteSalvo;
 	}
 
-  @PutMapping("/parceiros/restaurantes/{id}")
-  public RestauranteDto atualiza(@PathVariable Long id, @RequestBody RestauranteDto restaurante) {
-    Restaurante doBD = restauranteRepo.getOne(id);
-    restaurante.populaRestaurante(doBD);
-    return new RestauranteDto(restauranteRepo.save(doBD));
-  }
+	@PutMapping("/parceiros/restaurantes/{id}")
+	public RestauranteDto atualiza(@PathVariable Long id, @RequestBody RestauranteDto restaurante) {
+		Restaurante doBD = restauranteRepo.getOne(id);
+		restaurante.populaRestaurante(doBD);
+		clienteRestDoRestaurante.alterarRestaurante(id, restaurante.getCep(), restaurante.getTipoDeCozinha().getId());
+		return new RestauranteDto(restauranteRepo.save(doBD));
+	}
 
-
-  @GetMapping("/admin/restaurantes/em-aprovacao")
+	@GetMapping("/admin/restaurantes/em-aprovacao")
 	List<RestauranteDto> emAprovacao() {
-		return restauranteRepo.findAllByAprovado(false).stream().map(RestauranteDto::new)
-				.collect(Collectors.toList());
+		return restauranteRepo.findAllByAprovado(false).stream().map(RestauranteDto::new).collect(Collectors.toList());
 	}
 
 	@Transactional
