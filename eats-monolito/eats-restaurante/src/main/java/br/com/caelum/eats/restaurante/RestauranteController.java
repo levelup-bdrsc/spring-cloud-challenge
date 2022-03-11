@@ -21,6 +21,7 @@ class RestauranteController {
 
 	private RestauranteRepository restauranteRepo;
 	private CardapioRepository cardapioRepo;
+	private DistanciaClient distanciaClient;
 
 	@GetMapping("/restaurantes/{id}")
 	RestauranteDto detalha(@PathVariable("id") Long id) {
@@ -46,6 +47,10 @@ class RestauranteController {
 		Cardapio cardapio = new Cardapio();
 		cardapio.setRestaurante(restauranteSalvo);
 		cardapioRepo.save(cardapio);
+		DistanciaRestauranteDto distanciaRestauranteDto = new DistanciaRestauranteDto();
+		distanciaRestauranteDto.setCep(restaurante.getCep());
+		distanciaRestauranteDto.setTipoDeCozinhaId(restaurante.getTipoDeCozinha().getId());
+		distanciaClient.adiciona(distanciaRestauranteDto);
 		return restauranteSalvo;
 	}
 
@@ -53,6 +58,11 @@ class RestauranteController {
   public RestauranteDto atualiza(@PathVariable Long id, @RequestBody RestauranteDto restaurante) {
     Restaurante doBD = restauranteRepo.getOne(id);
     restaurante.populaRestaurante(doBD);
+	DistanciaRestauranteDto distanciaRestauranteDto = new DistanciaRestauranteDto();
+	distanciaRestauranteDto.setId(restaurante.getId());
+	distanciaRestauranteDto.setCep(restaurante.getCep());
+	distanciaRestauranteDto.setTipoDeCozinhaId(restaurante.getTipoDeCozinha().getId());
+	distanciaClient.atualiza(id, distanciaRestauranteDto);
     return new RestauranteDto(restauranteRepo.save(doBD));
   }
 
