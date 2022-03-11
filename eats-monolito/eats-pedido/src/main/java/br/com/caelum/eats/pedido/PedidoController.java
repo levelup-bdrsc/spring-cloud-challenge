@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 @RestController
 @AllArgsConstructor
 class PedidoController {
@@ -47,6 +49,7 @@ class PedidoController {
 
 	@PutMapping("/pedidos/{pedidoId}/status")
 	PedidoDto atualizaStatus(@PathVariable Long pedidoId, @RequestBody Pedido pedidoParaAtualizar) {
+		log.info(String.format("Pedido a atualizar: %s > %s", pedidoId, pedidoParaAtualizar.getStatus()));
 		Pedido pedido = repo.porIdComItens(pedidoId).orElseThrow(ResourceNotFoundException::new);
 		pedido.setStatus(pedidoParaAtualizar.getStatus());
 		repo.atualizaStatus(pedido.getStatus(), pedido);
