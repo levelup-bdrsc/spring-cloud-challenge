@@ -1,0 +1,21 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:monolito
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: password
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+      settings:
+        trace: false
+        web-allow-others: false
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
