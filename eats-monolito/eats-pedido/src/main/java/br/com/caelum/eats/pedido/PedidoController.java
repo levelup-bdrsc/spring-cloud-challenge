@@ -46,11 +46,16 @@ class PedidoController {
 	}
 
 	@PutMapping("/pedidos/{pedidoId}/status")
-	PedidoDto atualizaStatus(@PathVariable Long pedidoId, @RequestBody Pedido pedidoParaAtualizar) {
-		Pedido pedido = repo.porIdComItens(pedidoId).orElseThrow(ResourceNotFoundException::new);
-		pedido.setStatus(pedidoParaAtualizar.getStatus());
-		repo.atualizaStatus(pedido.getStatus(), pedido);
-		return new PedidoDto(pedido);
+	PedidoDto atualizaStatus(@PathVariable Long pedidoId, @RequestBody Pedido pedidoParaAtualizar) throws InterruptedException {
+		if (LocalDateTime.now().getMinute() % 2 == 0) {
+			Pedido pedido = repo.porIdComItens(pedidoId).orElseThrow(ResourceNotFoundException::new);
+			pedido.setStatus(pedidoParaAtualizar.getStatus());
+			repo.atualizaStatus(pedido.getStatus(), pedido);
+			return new PedidoDto(pedido);
+		}
+
+		Thread.sleep(30000);
+		throw new RuntimeException("Não foi possível atualizar o pedido");
 	}
 
 	@PutMapping("/pedidos/{id}/pago")
